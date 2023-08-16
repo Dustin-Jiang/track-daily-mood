@@ -9,6 +9,7 @@ interface ICalendarDate {
   color: Color;
   outline: boolean;
   today: boolean;
+  disabled: boolean;
 }
 
 type DateList = [Accessor<ICalendarDate>, Setter<ICalendarDate>][][];
@@ -16,7 +17,7 @@ type DateList = [Accessor<ICalendarDate>, Setter<ICalendarDate>][][];
 class Calendar {
   protected calendar = CalendarModel();
   private days: Accessor<IDate[][]>;
-  private readonly emptyDate = {
+  private readonly emptyDate: ICalendarDate = {
     display: false,
     date: {
       date: 0,
@@ -25,7 +26,9 @@ class Calendar {
     color: "",
     outline: false,
     today: false,
+    disabled: false
   };
+  private selectedDate: [number, number] = [-1, -1]
 
   private dateList: DateList = [
     [], [], [], [], [], [],
@@ -35,7 +38,7 @@ class Calendar {
   private setDays: Setter<DateList>
 
   constructor() {
-    let [getDays, setDays] = createSignal<DateList>([[], [], [], [], [], []]);
+    let [getDays, setDays] = createSignal<DateList>([[], [], [], [], [], []], {equals: false});
     this.getDays = getDays
     this.setDays = setDays
     this.days = createMemo<IDate[][]>(() => 
@@ -44,6 +47,13 @@ class Calendar {
   }
 
   nextMonth() {
+    // prevent future months
+    let thisMonth =
+      this.calendar.date.getFullYear() === new Date().getFullYear() &&
+      this.calendar.date.getMonth() === new Date().getMonth();
+    if (thisMonth) {
+      return ;
+    }
     this.calendar.nextMonth()
   }
   previousMonth() {
@@ -51,7 +61,8 @@ class Calendar {
   }
 
   refreshDays(days: IDate[][]) {
-    console.log(days)
+    let thisMonth = this.calendar.date.getFullYear() === (new Date()).getFullYear()
+      && this.calendar.date.getMonth() === (new Date()).getMonth()
 
     this.dateList = [[], [], [], [], [], []];
     let weekCount = 0;
@@ -72,7 +83,8 @@ class Calendar {
           },
           color: "",
           outline: false,
-          today: false,
+          today: thisMonth && dateInfo.date + 1 === new Date().getDate(),
+          disabled: thisMonth && dateInfo.date + 1 > new Date().getDate()
         });
       });
 
@@ -88,8 +100,40 @@ class Calendar {
     let d = this.calendar.date
     return new Intl.DateTimeFormat("default", {
       year: "numeric",
-      month: "long",
+      month: "short",
     }).format(d);
+  }
+
+  backToToday() {
+    this.calendar.today()
+  }
+
+  toggleSelected(week: number, date: number) {
+    let prev = this.getDays();
+    let [selectedWeek, selectedDate] = this.selectedDate
+
+    if (selectedDate === -1 || (week === selectedWeek && date === selectedDate)) {
+      let prevDate = prev[week][date][0]()
+      prev[week][date] = createSignal({
+        ...prevDate,
+        outline: !prevDate.outline
+      })
+    }
+    else {
+      let prevDate = prev[selectedWeek][selectedDate][0]()
+      let nowDate = prev[week][date][0]()
+      prev[selectedWeek][selectedDate] = createSignal<ICalendarDate>({
+        ...prevDate,
+        outline: false
+      })
+      prev[week][date] = createSignal<ICalendarDate>({
+        ...nowDate,
+        outline: true
+      })
+    }
+
+    this.selectedDate = [week, date]
+    this.setDays(prev)
   }
 }
 

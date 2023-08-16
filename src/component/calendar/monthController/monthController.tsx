@@ -1,5 +1,5 @@
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@suid/icons-material";
-import { IconButton, Typography } from "@suid/material";
+import { IconButton, Button } from "@suid/material";
 import type { Component } from "solid-js";
 import CalendarViewModel from "../../../viewModel/calendar";
 import { theme } from "../../../App";
@@ -16,9 +16,15 @@ const MonthController : Component = () => {
       <IconButton onclick={() => calendar.previousMonth()}>
         <KeyboardArrowLeft sx={{ color: theme().palette.text.secondary }} />
       </IconButton>
-      <Typography sx={{ width: "132px", textAlign: "center", margin: "0 4px" }}>
+      <Button sx={{
+        width: "100px", 
+        textAlign: "center", 
+        margin: "0 4px", 
+        borderRadius: "30px",
+        color: theme().palette.text.secondary
+      }}>
         {calendar.monthToString()}
-      </Typography>
+      </Button>
       <IconButton onclick={() => calendar.nextMonth()}>
         <KeyboardArrowRight sx={{ color: theme().palette.text.secondary }} />
       </IconButton>

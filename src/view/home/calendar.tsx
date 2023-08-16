@@ -1,4 +1,4 @@
-import { Component, For, createEffect } from "solid-js";
+import { Component, For } from "solid-js";
 import CalendarDate from "../../component/calendar/calendarDate/calendarDate";
 import CalendarViewModel from "../../viewModel/calendar";
 import MonthController from "../../component/calendar/monthController/monthController";
@@ -8,11 +8,11 @@ const Calendar : Component = () => {
 
   return (
     <div style={{
-      padding: "0 20px"
+      padding: "0 16px"
     }}>
       <MonthController />
-      <For each={calendar.getDays()}>
-        {(week) => {
+      {calendar.getDays().map(
+        (week, weekIndex) => {
           return (
             <div
               style={{
@@ -21,14 +21,14 @@ const Calendar : Component = () => {
               }}
             >
               <For each={week}>
-                {(date) => {
-                  return <CalendarDate config={date} />;
+                {(date, dateIndex) => {
+                  return <CalendarDate config={date} week={weekIndex} date={dateIndex()}/>;
                 }}
               </For>
             </div>
           );
-        }}
-      </For>
+        }
+      )}
     </div>
   );
 }

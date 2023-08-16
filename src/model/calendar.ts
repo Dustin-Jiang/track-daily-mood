@@ -1,4 +1,4 @@
-import { Accessor, Setter, createSignal } from "solid-js";
+import { Accessor, Setter, batch, createSignal } from "solid-js";
 import { SetStoreFunction, Store, createStore } from "solid-js/store";
 
 interface IDate {
@@ -8,7 +8,8 @@ interface IDate {
 
 class MonthlyCalendar {
   days: Store<IDate[][]>;
-  setDays: SetStoreFunction<IDate[][]>;
+  private setDays: SetStoreFunction<IDate[][]>;
+
 
   private leapYear: boolean;
   private monthList: number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -37,39 +38,41 @@ class MonthlyCalendar {
 
     let weeks = 0;
     let days: IDate[] = []
-    for (
-      let dateIndex = 0;
-      dateIndex < this.monthList[this.dateStorage().getMonth()]; 
-      dateIndex++
-    ) {
-      let day = new Date(
-        this.dateStorage().getFullYear(),
-        this.dateStorage().getMonth(),
-        dateIndex + 1 // JS Date feature
-      );
 
-      days.push({
-        date: dateIndex,
-        day: day.getDay()
-      })
-      
-      // New Week
-      if (day.getDay() === 6) {
-        this.setDays(weeks, days)
-        
-        days = []
+    // Avoid refreshing when unfinished
+    batch(() => {
+      for (
+        let dateIndex = 0;
+        dateIndex < this.monthList[this.dateStorage().getMonth()];
+        dateIndex++
+      ) {
+        let day = new Date(
+          this.dateStorage().getFullYear(),
+          this.dateStorage().getMonth(),
+          dateIndex + 1 // JS Date feature
+        );
+
+        days.push({
+          date: dateIndex,
+          day: day.getDay(),
+        });
+
+        // New Week
+        if (day.getDay() === 6) {
+          this.setDays(weeks, days);
+
+          days = [];
+          weeks++;
+        }
+      }
+      if (days.length !== 0) {
+        this.setDays(weeks, days);
         weeks++;
       }
-    }
-    if (days.length !== 0) {
-      this.setDays(weeks, days);
-      weeks++;
-    }
-    for (weeks; weeks < 6; weeks++) {
-      this.setDays(weeks, undefined)
-    }
-
-    console.log(this.days)
+      for (weeks; weeks < 6; weeks++) {
+        this.setDays(weeks, undefined);
+      }
+    })
   }
 
   get date() {
@@ -78,7 +81,6 @@ class MonthlyCalendar {
 
   today() {
     this.date = (new Date());
-    return this.dateStorage()
   }
 
   nextMonth() {
