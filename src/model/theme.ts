@@ -51,7 +51,7 @@ const MaterialYouThemeDark = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#ffb1c8",
+      main: "#d57193",
       contrastText: "#5e1032",
       light: "#7b2949",
       dark: "#ffd9e2",

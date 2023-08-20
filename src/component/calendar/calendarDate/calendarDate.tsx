@@ -2,6 +2,7 @@ import { Button } from "@suid/material";
 import { Accessor, Component, Setter, createEffect, createSignal } from "solid-js";
 import CalendarViewModel, { ICalendarDate } from "../../../viewModel/calendar";
 import { desktop, largeMobile } from "../../../utils/responsive";
+import MoodIndicator from "./moodIndicator";
 
 type CalendarConfig = [Accessor<ICalendarDate>, Setter<ICalendarDate>]
 
@@ -26,7 +27,7 @@ const CalendarDate : Component<{
         margin: desktop() ? "8px" : (largeMobile() ? "4px" : "0"),
         width: desktop() ? "64px" : (largeMobile() ? "56px" : "48px"),
         minWidth: desktop() ? "64px" : (largeMobile() ? "56px" : "48px"),
-        fontSize: "1rem",
+        fontSize: "1rem"
       }}
       variant={getVariant(options())}
       onclick={() =>
@@ -35,6 +36,7 @@ const CalendarDate : Component<{
       disabled={options().disabled}
     >
       {options().date.date}
+      <MoodIndicator />
     </Button>
   );
 }

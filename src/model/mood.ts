@@ -53,12 +53,26 @@ export const Mood: {
       text: "#3b2f00",
     },
     mild: {
-      main: "#00419d",
+      main: "#648eee",
       text: "#d9e2ff",
     },
     fine: {
-      main: "#b0d36d",
+      main: "#95b755",
       text: "#243600",
     },
   },
 };
+
+let moodTypes: MoodTypes[] = []
+for (let moodType in Mood.light) {
+  moodTypes.push(moodType as MoodTypes)
+}
+
+type MoodTypes = keyof MoodPalette
+export type {
+  MoodPalette,
+  MoodTypes
+}
+export {
+  moodTypes
+}

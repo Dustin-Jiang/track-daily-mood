@@ -3,8 +3,8 @@ import { Route, Router, Routes } from "@solidjs/router";
 import Home from './page/home';
 import { Breakpoint, Theme, ThemeProvider, useMediaQuery } from '@suid/material';
 import { MaterialYouThemeDark, MaterialYouThemeLight } from './model/theme';
+import { dark } from './utils/dark';
 
-let dark = useMediaQuery("(prefers-color-scheme: dark)");
 let [theme, setTheme] = createSignal<Theme<Breakpoint>>();
 
 const toggleTheme = () => {
