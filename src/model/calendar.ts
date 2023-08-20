@@ -2,6 +2,8 @@ import { Accessor, Setter, batch, createSignal } from "solid-js";
 import { SetStoreFunction, Store, createStore } from "solid-js/store";
 
 interface IDate {
+  year: number;
+  month: number;
   date: number;
   day: number;
 }
@@ -53,6 +55,8 @@ class MonthlyCalendar {
         );
 
         days.push({
+          year: day.getFullYear(),
+          month: day.getMonth(),
           date: dateIndex,
           day: day.getDay(),
         });

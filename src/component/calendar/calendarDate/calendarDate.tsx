@@ -36,7 +36,11 @@ const CalendarDate : Component<{
       disabled={options().disabled}
     >
       {options().date.date}
-      <MoodIndicator />
+      <MoodIndicator date={{
+        y: options().date.year,
+        m: options().date.month,
+        d: options().date.date
+      }} />
     </Button>
   );
 }

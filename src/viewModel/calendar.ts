@@ -20,6 +20,8 @@ class Calendar {
   private readonly emptyDate: ICalendarDate = {
     display: false,
     date: {
+      year: 0,
+      month: 0,
       date: 0,
       day: 0,
     },
@@ -78,6 +80,8 @@ class Calendar {
         this.dateList[weekCount][dateInfo.day][1]({
           display: true,
           date: {
+            year: dateInfo.year,
+            month: dateInfo.month,
             date: dateInfo.date + 1,
             day: dateInfo.day,
           },

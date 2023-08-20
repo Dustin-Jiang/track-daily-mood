@@ -3,6 +3,7 @@ import Calendar from "../view/home/calendar";
 import { theme } from "../App";
 import TopBanner from "../component/home/topBanner";
 import Toolbar from "../component/home/toolbar/toolbar";
+import Fab from "../component/home/addMood/fab";
 
 const Home : Component = () => {
   return (
@@ -12,6 +13,7 @@ const Home : Component = () => {
     }}>
       <TopBanner toolbar={() => <Toolbar />}>日历</TopBanner>
       <Calendar />
+      <Fab />
     </div>
   )
 }
